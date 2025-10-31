@@ -1,0 +1,109 @@
+{
+  "home": "Home",
+  "natural": "Natural Flowers",
+  "artificial": "Artificial Flowers",
+  "arrangements": "Arrangements",
+  "weddings": "Weddings",
+  "birthdays": "Birthdays",
+  "graduations": "Graduations",
+  "contact": "Contact Us",
+  "storeLocation": "Store Location",
+  "favorites": "Favorites",
+  "cart": "Shopping Cart",
+  "search": "Search",
+  "searchButton": "Search Button",
+  "searchPlaceholder": "Search here...",
+  "openMenu": "Open Menu",
+  "closeMenu": "Close Menu",
+  "mainMenu": "Main Menu",
+  "navMenu": "Navigation Menu",
+  "freeDelivery": "Free delivery available across Ras Al Khaimah",
+  "footer": {
+    "logoAr": "Petals and Pots Flowers",
+    "logoEn": "بيتالس اند بوتس للزهور",
+    "description": "Where beauty and elegance bloom 🌸\nThe finest bouquets of natural and artificial flowers, gift wrapping, and professional event planning.",
+    "quickLinks": "Quick Links",
+    "aboutStore": "About Store",
+    "products": "Our Products",
+    "partyPlanning": "Party Planning",
+    "giftWrapping": "Gift Wrapping",
+    "contactUs": "Contact Us",
+    "contact": "Contact Us",
+    "address": "Ras Al Khaimah, Al Ittihad Street - Al Dhait",
+    "phone": "Phone",
+    "copyright": "© 2025 Petals and Pots Flowers – بيتالس اند بوتس للزهور. All rights reserved."
+  },
+  "orderNow": "Order Now",
+  "addToCart": "Add to Cart",
+  "currency": "AED",
+  "article": {
+    "header": {
+      "title": "Petals and Pots Flowers in Ras Al Khaimah",
+      "subtitle": "The best destination in Ras Al Khaimah for natural flowers, artificial flowers, arrangements, gift wrapping, and professional party planning."
+    },
+    "sections": {
+      "naturalFlowers": {
+        "title": "Natural and Artificial Flowers for Every Occasion",
+        "text": "At Petals and Pots Flowers, we offer a wonderful collection of high-quality natural flowers along with elegant artificial flowers that last long and add a beautiful touch to any space..."
+      },
+      "arrangements": {
+        "title": "Amazing Flower Arrangements",
+        "text": "Our specialized team in Ras Al Khaimah provides professional flower arrangements suitable for all occasions while considering the beauty of colors and intricate details..."
+      },
+      "gifts": {
+        "title": "Elegant and Distinctive Gift Wrapping",
+        "text": "No gift is complete without a magical touch of professional gift wrapping..."
+      },
+      "events": {
+        "title": "Professional Event Planning",
+        "text": "We offer complete party planning services to ensure enchanting atmospheres and unforgettable memories..."
+      },
+      "location": {
+        "title": "Our Store in Ras Al Khaimah",
+        "text": "Petals and Pots Flowers is located in the heart of Ras Al Khaimah, specifically at Al Ittihad Street - Al Dhaid - Ras Al Khaimah..."
+      },
+      "whyUs": {
+        "title": "Why Choose Our Flower Store?",
+        "text": "• Highest quality natural and artificial flowers\n• Professional bouquet designs suitable for all occasions\n• Unique gift wrapping with modern ideas..."
+      }
+    },
+    "storeInfo": {
+      "title": "Contact Information:",
+      "name": "Name: Petals and Pots Flowers",
+      "address": "Address: Al Ittihad Street - Al Dhaid - Ras Al Khaimah",
+      "phone": "Phone: 054 480 8838",
+      "hours": "Hours: Open daily ⋅ Closes at 10:00 PM",
+      "rating": "Rating: ⭐ 4.7 / 5 based on hundreds of reviews from our valued customers"
+    },
+    "footer": {
+      "text": "Enjoy an unparalleled shopping experience with Petals and Pots Flowers in Ras Al Khaimah, where beauty meets elegance in every bouquet!"
+    }
+  },
+  "formats": {
+    "title": "Best Flower Arrangements",
+    "slider": {
+      "prev": "‹",
+      "next": "›"
+    }
+  }
+  ,
+"naturalRoses": {
+  "title": "Best Natural Flower Bouquets",
+  "slider": {
+    "prev": "‹",
+    "next": "›"
+  }
+},
+"filters": {
+  "az": "A → Z",
+  "za": "Z → A",
+  "low": "Price: Low → High",
+  "high": "Price: High → Low"
+},
+  "panorama": {
+    "header": {
+      "title": "What Our Store Offers You?"
+    }
+  }
+
+}

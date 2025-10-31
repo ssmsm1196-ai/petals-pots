@@ -1,0 +1,32 @@
+@import url('https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400;1,700&display=swap');
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+:root{
+  --main-color: rgb(128, 0, 128); 
+  --body-color: #fff8f9; /* خلفية شبه بيضاء تميل للوردي */
+  --light-color: #ffffff;
+  --dark-color: #1a1a1a;
+  --accent-color: #ffd6e0; 
+  --logo-color: #fac96e;
+  --opacity-color: rgba(128, 0, 128, 0.836);
+}
+main{
+  
+    font-family: "Amiri", serif;
+    padding:10px 50px 0 50px ;
+    color: var(--main-color);
+background: var(--body-color);
+overflow-x: hidden;
+
+}
+@media (max-width:800px) {
+    main{
+        padding:10px 5px 0 5px ;
+
+    }
+
+    
+}

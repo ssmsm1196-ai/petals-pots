@@ -1,0 +1,31 @@
+.TopNav{
+    border-bottom: 1px solid var(--main-color);
+    
+}
+.TopNav P{
+    font-weight: 900;
+}
+.TopNav > .SocialLinks{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap:20px;
+    font-size: 20px;
+}
+.TopNav .SocialLinks a{
+    text-decoration: none;
+    color: var(--main-color);
+    transition: 0.5s;
+}
+.TopNav .SocialLinks a:hover{
+    color: var(--logo-color);
+    transform: scale(1.2);
+}
+@media (max-width:800px) {
+    .TopNav{
+        flex-direction: column;
+
+    }
+
+    
+}
