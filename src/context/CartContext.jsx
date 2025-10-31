@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState } from "react";
+import React, { createContext, useContext, useState, useEffect } from "react";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -7,7 +7,14 @@ const CartContext = createContext();
 export const useCart = () => useContext(CartContext);
 
 export const CartProvider = ({ children }) => {
-  const [cartItems, setCartItems] = useState([]);
+  const [cartItems, setCartItems] = useState(() => {
+    const savedCart = localStorage.getItem("cartItems");
+    return savedCart ? JSON.parse(savedCart) : [];
+  });
+
+  useEffect(() => {
+    localStorage.setItem("cartItems", JSON.stringify(cartItems));
+  }, [cartItems]);
 
   const addToCart = (product) => {
     setCartItems((prev) => {
@@ -20,7 +27,8 @@ export const CartProvider = ({ children }) => {
         return [...prev, { ...product, qty: 1 }];
       }
     });
-    toast.success(`${product.title} تم إضافته للسلة!`, {
+
+    toast.success(`${product.name} تم إضافته للسلة!`, {
       position: "top-right",
       autoClose: 2000,
       hideProgressBar: false,
@@ -46,7 +54,10 @@ export const CartProvider = ({ children }) => {
   const removeItem = (id) =>
     setCartItems((prev) => prev.filter((item) => item.id !== id));
 
-  const total = cartItems.reduce((acc, item) => acc + item.price * item.qty, 0);
+  const total = cartItems.reduce(
+    (acc, item) => acc + (item.price ?? item.discountPrice ?? item.originalPrice) * item.qty,
+    0
+  );
 
   return (
     <CartContext.Provider

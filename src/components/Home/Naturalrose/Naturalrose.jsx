@@ -84,7 +84,6 @@ function Naturalrose() {
 
   return (
     <div className="Naturalrose my-5">
-      {/* ===== Header مع العنوان والنافيجيشن ===== */}
       <div className="slider-header">
         <h2 className="slider-title">{t('naturalRoses.title')}</h2>
         <div className="slider-navigation">
@@ -105,7 +104,6 @@ function Naturalrose() {
         </div>
       </div>
 
-      {/* ===== تمرير المنتجات إلى السلايدر ===== */}
       <ProductsSlider products={products} ref={swiperRef} />
     </div>
   );

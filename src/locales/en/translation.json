@@ -104,6 +104,12 @@
     "header": {
       "title": "What Our Store Offers You?"
     }
-  }
+  },
+    "cartEmpty": "Your cart is empty",
+  "quantity": "Quantity",
+  "price": "Price",
+  "total": "Total",
+  "removeItem": "Remove Item"
+
 
 }

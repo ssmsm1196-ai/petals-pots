@@ -42,7 +42,7 @@ function App() {
   ]);
 
   return (
-    <CartProvider>
+    <main>
       <RouterProvider router={router} />
       <ToastContainer 
         position="top-right"
@@ -55,7 +55,9 @@ function App() {
         draggable
         pauseOnHover
       />
-    </CartProvider>
+  
+
+    </main>
   );
 }
 

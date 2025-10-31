@@ -4,26 +4,25 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay } from 'swiper/modules';
 import { useTranslation } from 'react-i18next';
 import 'swiper/css';
+import { useCart } from '../../../context/CartContext'; // استدعاء الكونتكست
 
 const ProductsSlider = forwardRef(({ products }, ref) => {
   const { t, i18n } = useTranslation();
+  const { addToCart } = useCart(); // استخدام الدالة لإضافة المنتج للعربة
   const [swiperInstance, setSwiperInstance] = useState(null);
   const [isRTL, setIsRTL] = useState(false);
 
-  // ✅ ضبط الاتجاه بناءً على اللغة
   useEffect(() => {
     const rtl = i18n.language === 'ar';
     setIsRTL(rtl);
     document.documentElement.setAttribute('dir', rtl ? 'rtl' : 'ltr');
   }, [i18n.language]);
 
-  // ✅ التحكم من الأب
   useImperativeHandle(ref, () => ({
     slideNext: () => swiperInstance?.slideNext(),
     slidePrev: () => swiperInstance?.slidePrev(),
   }));
 
-  // ✅ عرض النجوم
   const renderStars = (count) =>
     Array.from({ length: 5 }, (_, i) => (
       <span key={i} style={{ color: '#ffcc00', fontSize: '1rem' }}>
@@ -37,7 +36,7 @@ const ProductsSlider = forwardRef(({ products }, ref) => {
       dir={isRTL ? 'rtl' : 'ltr'}
     >
       <Swiper
-        key={isRTL ? 'rtl' : 'ltr'} // 🔥 مهم جدًا لإعادة بناء السويبر بدون لاج
+        key={isRTL ? 'rtl' : 'ltr'}
         onSwiper={setSwiperInstance}
         modules={[Autoplay]}
         spaceBetween={10}
@@ -78,8 +77,18 @@ const ProductsSlider = forwardRef(({ products }, ref) => {
               </div>
               <div className="product-rating">{renderStars(product.rating)}</div>
               <div className="product-actions-vertical">
-                <button className="btn-buy">{t('orderNow')}</button>
-                <button className="btn-cart">{t('addToCart')}</button>
+                <button
+                  className="btn-buy"
+                  onClick={() => addToCart(product)} // إضافة المنتج للعربة
+                >
+                  {t('orderNow')}
+                </button>
+                <button
+                  className="btn-cart"
+                  onClick={() => addToCart(product)} // نفس الدالة للزر الثاني
+                >
+                  {t('addToCart')}
+                </button>
               </div>
             </div>
           </SwiperSlide>
