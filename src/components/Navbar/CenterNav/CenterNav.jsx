@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './CenterNav.css';
 import logo from '../../../assets/image/logo.png';
-import { FaSearch, FaHeart } from "react-icons/fa";
+import { FaHeart } from "react-icons/fa";
 import { FaLocationDot } from "react-icons/fa6";
 import { BiSolidShoppingBagAlt, BiMenu } from "react-icons/bi";
 import { NavLink } from 'react-router-dom';
@@ -64,7 +64,7 @@ function CenterNav() {
 
       <div className='search col-lg-4 col-md-6 col-sm-12 d-flex justify-content-center flex-column align-items-center nav-section'>
         <input placeholder={t('searchPlaceholder')} type="text" aria-label={t('search')} />
-        <button aria-label={t('searchButton')}><FaSearch /></button>
+        <button aria-label={t('searchButton')}></button>
       </div>
 
       <ul className='main-menu' role="menubar" aria-label={t('mainMenu')}>

@@ -1,30 +1,35 @@
-.CenterNav{
-}
 
+/* ✅ بداية تنسيق CenterNav */
+.CenterNav {}
+
+/* الشعار */
 .CenterNav .logo {
   position: relative;
 }
-.CenterNav .logo > img{
+.CenterNav .logo > img {
   width: 80px;
   height: 80px;
 }
-.CenterNav .logo > p{
+.CenterNav .logo > div {
   font-size: 15px;
+  color: var(--logo-color) !important;
 }
-.CenterNav .search{
+
+/* البحث */
+.CenterNav .search {
   position: relative;
 }
-.CenterNav .search input{
+.CenterNav .search input {
   width: 100%;
   padding: 8px 20px;
   border: 1px solid var(--main-color);
   border-radius: 30px;
   color: var(--main-color);
 }
-.CenterNav .search input:focus{
-  outline: 1px solid var(--main-color)!important;
+.CenterNav .search input:focus {
+  outline: 1px solid var(--main-color) !important;
 }
-.CenterNav .search button{
+.CenterNav .search button {
   position: absolute;
   top: 50%;
   left: 30px;
@@ -36,37 +41,41 @@
   cursor: pointer;
   transition: 0.5s;
 }
-.CenterNav .search button:hover{
+.CenterNav .search button:hover {
   font-size: 20px;
   color: var(--logo-color);
 }
-.CenterNav .rightNav{
+
+/* الأيقونات اليمينية */
+.CenterNav .rightNav {
   font-size: 20px;
   cursor: pointer;
   transition: 0.5s;
   white-space: nowrap;
+  color: var(--main-color);
 }
-.CenterNav .rightNav:hover{
+.CenterNav .rightNav:hover {
   transform: scale(1.1);
   color: var(--logo-color);
 }
 
 /* القائمة الأساسية */
-.CenterNav .main-menu{
+.CenterNav .main-menu {
   display: flex;
   gap: 30px;
   background-color: var(--main-color);
-  box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px,
-              rgba(60, 64, 67, 0.15) 0px 1px 3px 1px;
+  box-shadow:
+    rgba(60, 64, 67, 0.3) 0px 1px 2px 0px,
+    rgba(60, 64, 67, 0.15) 0px 1px 3px 1px;
   border-radius: 10px;
   padding: 10px 20px;
   font-size: 18px;
   transition: 0.5s;
 }
-.CenterNav ul li{
+.CenterNav ul li {
   list-style: none;
 }
-.CenterNav ul li a{
+.CenterNav ul li a {
   text-decoration: none;
   color: var(--body-color);
   transition: 0.5s;
@@ -74,24 +83,16 @@
   border-radius: 10px;
 }
 
-/* تأثير hover */
-.CenterNav ul li a:hover{
-  color: var(--light-color);
-  font-weight: bold;
-  text-shadow: 1px 1px 2px var(--dark-color);
-  border: 1px solid var(--light-color);
-  box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px,
-              rgba(60, 64, 67, 0.15) 0px 1px 3px 1px;
-}
-
-/* ✅ تأثير للمسار الحالي (active link) نفس تأثير الـ hover */
+/* Hover & Active */
+.CenterNav ul li a:hover,
 .CenterNav ul li a.active {
   color: var(--light-color);
   font-weight: bold;
   text-shadow: 1px 1px 2px var(--dark-color);
   border: 1px solid var(--light-color);
-  box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px,
-              rgba(60, 64, 67, 0.15) 0px 1px 3px 1px;
+  box-shadow:
+    rgba(60, 64, 67, 0.3) 0px 1px 2px 0px,
+    rgba(60, 64, 67, 0.15) 0px 1px 3px 1px;
 }
 
 /* زر المنيو */
@@ -108,13 +109,14 @@
 }
 .menu-btn:hover {
   transform: scale(1.1);
+  color: var(--logo-color);
 }
 
-/* ✅ المودال */
+/* المودال */
 .menu-modal {
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.5);
+  background: rgba(0, 0, 0, 0.5);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -158,8 +160,6 @@
 .menu-content a:hover {
   color: var(--body-color);
 }
-
-/* ✅ نفس التأثير للرابط النشط داخل المودال */
 .menu-content a.active {
   color: var(--body-color);
   font-weight: bold;
@@ -182,7 +182,7 @@
   color: var(--body-color);
 }
 
-/* إخفاء القائمة عند الشاشات الصغيرة */
+/* Responsive */
 @media (max-width: 800px) {
   .CenterNav .main-menu {
     display: none;
