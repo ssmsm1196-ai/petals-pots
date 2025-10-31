@@ -5,7 +5,7 @@ import "./ShoppingCart.css";
 
 function ShoppingCart({ onClose }) {
   const { cartItems, increaseQty, decreaseQty, removeItem, total } = useCart();
-  const whatsappNumber = "971500000000";
+  const whatsappNumber = "971544808838";
 
   const handleWhatsAppOrder = () => {
     if (cartItems.length === 0) return alert("السلة فارغة");
