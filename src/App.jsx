@@ -5,7 +5,9 @@ import Home from "./components/Home/Home";
 import Natural from "./components/Natural/Natural";
 import "./i18n";
 import { useTranslation } from "react-i18next";
-import ShoppingCart from "./components/ShoppingCart/ShoppingCart";
+import { CartProvider } from "./context/CartContext";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function App() {
   const { i18n } = useTranslation();
@@ -29,20 +31,31 @@ function App() {
   const router = createBrowserRouter([
     {
       path: "",
-      element: <Layout changeLanguage={changeLanguage} />, // ⬅️ نمرر الدالة للناف بار
+      element: <Layout changeLanguage={changeLanguage} />,
       errorElement: <h1>Page Not Found</h1>,
       children: [
         { index: true, element: <Home /> },
         { path: "/natural", element: <Natural /> },
-        // { path: "/shoppingCart", element: <ShoppingCart/> },
+        // يمكنك إضافة أي صفحات أخرى هنا
       ],
     },
   ]);
 
   return (
-    <main>
+    <CartProvider>
       <RouterProvider router={router} />
-    </main>
+      <ToastContainer 
+        position="top-right"
+        autoClose={2000}
+        hideProgressBar={false}
+        newestOnTop
+        closeOnClick
+        rtl={i18n.language === "ar"}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
+    </CartProvider>
   );
 }
 

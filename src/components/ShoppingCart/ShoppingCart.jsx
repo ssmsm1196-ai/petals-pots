@@ -1,31 +1,11 @@
 import React from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useCart } from "../../context/CartContext";
 import "./ShoppingCart.css";
 
-function ShoppingCart({ onClose, cartItems = [], setCartItems }) {
-  const whatsappNumber = "971500000000"; // 🔢 ضع رقم واتسابك هنا بدون +
-
-  const increaseQty = (id) => {
-    setCartItems((prev) =>
-      prev.map((item) =>
-        item.id === id ? { ...item, qty: item.qty + 1 } : item
-      )
-    );
-  };
-
-  const decreaseQty = (id) => {
-    setCartItems((prev) =>
-      prev.map((item) =>
-        item.id === id && item.qty > 1 ? { ...item, qty: item.qty - 1 } : item
-      )
-    );
-  };
-
-  const removeItem = (id) => {
-    setCartItems((prev) => prev.filter((item) => item.id !== id));
-  };
-
-  const total = cartItems.reduce((acc, item) => acc + item.price * item.qty, 0);
+function ShoppingCart({ onClose }) {
+  const { cartItems, increaseQty, decreaseQty, removeItem, total } = useCart();
+  const whatsappNumber = "971500000000";
 
   const handleWhatsAppOrder = () => {
     if (cartItems.length === 0) return alert("السلة فارغة");
@@ -33,7 +13,7 @@ function ShoppingCart({ onClose, cartItems = [], setCartItems }) {
       cartItems
         .map(
           (item) =>
-            `🔹 ${item.name}\nالكمية: ${item.qty}\nالسعر: ${item.price} درهم\n`
+            `🔹 ${item.title || item.name}\nالكمية: ${item.qty}\nالسعر: ${item.price} درهم\n`
         )
         .join("\n") +
       `\n-------------------\n💰 الإجمالي: ${total} درهم`;
@@ -53,7 +33,6 @@ function ShoppingCart({ onClose, cartItems = [], setCartItems }) {
             className="cart-modal show"
           >
             <div className="cart-content">
-              {/* زر إغلاق الكمبوننت */}
               <button
                 className="close-btn"
                 onClick={onClose}
@@ -71,9 +50,9 @@ function ShoppingCart({ onClose, cartItems = [], setCartItems }) {
                   <div className="cart-items">
                     {cartItems.map((item) => (
                       <div className="cart-item" key={item.id}>
-                        <img src={item.img} alt={item.name} />
+                        <img src={item.image || item.img} alt={item.title || item.name} />
                         <div className="item-info">
-                          <h4>{item.name}</h4>
+                          <h4>{item.title || item.name}</h4>
                           <p>{item.price * item.qty} درهم</p>
                           <div className="qty-controls">
                             <button onClick={() => decreaseQty(item.id)}>-</button>
