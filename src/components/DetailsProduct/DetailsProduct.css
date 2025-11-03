@@ -19,7 +19,6 @@
   width: 90%;
   max-width: 1000px;
   border-radius: 16px;
-  /* overflow: hidden; */
   position: relative;
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
   animation: scaleIn 0.3s ease-in-out;

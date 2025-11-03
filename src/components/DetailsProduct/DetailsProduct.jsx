@@ -4,7 +4,12 @@ import "./DetailsProduct.css";
 function DetailsProduct({ product, onClose, onAddToCart }) {
   if (!product) return null;
 
-  const [mainImage, setMainImage] = useState(product.images[0]);
+  const images =
+    Array.isArray(product.images) && product.images.length > 0
+      ? product.images
+      : [product.image || "https://via.placeholder.com/400"];
+
+  const [mainImage, setMainImage] = useState(images[0]);
   const [quantity, setQuantity] = useState(1);
   const [backgroundPos, setBackgroundPos] = useState("center");
   const imgContainerRef = useRef(null);
@@ -12,9 +17,15 @@ function DetailsProduct({ product, onClose, onAddToCart }) {
   const increaseQty = () => setQuantity((prev) => prev + 1);
   const decreaseQty = () => setQuantity((prev) => (prev > 1 ? prev - 1 : 1));
 
-  const discountedPrice = product.discount
-    ? (product.price - (product.price * product.discount) / 100).toFixed(2)
-    : product.price.toFixed(2);
+  const price = product.price ?? 0;
+  const discount = product.discount ?? 0;
+
+  // السعر بعد الخصم للقطعة الواحدة
+  const discountedPricePerItem =
+    discount > 0 ? price - (price * discount) / 100 : price;
+
+  // السعر الكلي حسب الكمية
+  const totalPrice = (discountedPricePerItem * quantity).toFixed(2);
 
   const handleMouseMove = (e) => {
     const { left, top, width, height } =
@@ -24,27 +35,38 @@ function DetailsProduct({ product, onClose, onAddToCart }) {
     setBackgroundPos(`${x}% ${y}%`);
   };
 
-  const handleMouseLeave = () => {
-    setBackgroundPos("center");
-  };
+  const handleMouseLeave = () => setBackgroundPos("center");
 
   const handleAddToCart = () => {
-    // ✅ تمرير الكمية الصحيحة للعربة
-    onAddToCart(product, quantity);
+    onAddToCart({ ...product, qty: quantity, price: discountedPricePerItem });
+  };
+
+  // إرسال رسالة واتساب
+  const handleOrderNow = () => {
+    const whatsappNumber = "971544808838"; // ضع رقم واتسابك بدون +
+    const message = `
+طلب منتج:
+الاسم: ${product.name}
+الكمية: ${quantity}
+السعر الإجمالي: ${totalPrice} AED
+الوصف: ${product.description || "لا يوجد وصف"}
+رابط الصورة: ${mainImage}
+    `;
+    const url = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(
+      message
+    )}`;
+    window.open(url, "_blank");
   };
 
   return (
     <div className="DetailsProduct-overlay" onClick={onClose}>
-      <div
-        className="DetailsProduct-modal"
-        onClick={(e) => e.stopPropagation()}
-      >
+      <div className="DetailsProduct-modal" onClick={(e) => e.stopPropagation()}>
         <button className="close-btn" onClick={onClose}>
           &times;
         </button>
 
         <div className="DetailsProduct-content">
-          {/* ✅ قسم الصور */}
+          {/* قسم الصور */}
           <div className="image-section">
             <div
               className="zoom-container"
@@ -56,11 +78,15 @@ function DetailsProduct({ product, onClose, onAddToCart }) {
                 backgroundPosition: backgroundPos,
               }}
             >
-              <img src={mainImage} alt={product.name} className="main-image" />
+              <img
+                src={mainImage}
+                alt={product.name || "منتج"}
+                className="main-image"
+              />
             </div>
 
             <div className="thumbnail-list">
-              {product.images.map((img, i) => (
+              {images.map((img, i) => (
                 <img
                   key={i}
                   src={img}
@@ -72,31 +98,31 @@ function DetailsProduct({ product, onClose, onAddToCart }) {
             </div>
           </div>
 
-          {/* ✅ قسم التفاصيل */}
+          {/* قسم التفاصيل */}
           <div className="info-section">
-            <h2 className="product-name">{product.name}</h2>
-            <p className="description">{product.description}</p>
+            <h2 className="product-name">{product.name || "بدون اسم"}</h2>
+            <p className="description">{product.description || "لا يوجد وصف للمنتج"}</p>
 
             <div className="price-box">
-              {product.discount > 0 && (
-                <span className="old-price">{product.price.toFixed(2)} AED</span>
+              {discount > 0 && (
+                <span className="old-price">{price.toFixed(2)} AED</span>
               )}
-              <span className="new-price">{discountedPrice} AED</span>
-              {product.discount > 0 && (
-                <span className="discount">-{product.discount}%</span>
-              )}
+              <span className="new-price">{totalPrice} AED</span>
+              {discount > 0 && <span className="discount">-{discount}%</span>}
             </div>
 
-            {/* ✅ التحكم في الكمية */}
+            {/* التحكم في الكمية */}
             <div className="quantity-control">
               <button onClick={decreaseQty}>-</button>
               <span>{quantity}</span>
               <button onClick={increaseQty}>+</button>
             </div>
 
-            {/* ✅ الأزرار (تحت التفاصيل مباشرة وبشكل عمودي) */}
+            {/* الأزرار */}
             <div className="action-buttons column-layout">
-              <button className="order-now">اطلب الآن</button>
+              <button className="order-now" onClick={handleOrderNow}>
+                اطلب الآن
+              </button>
               <button className="add-to-cart" onClick={handleAddToCart}>
                 أضف إلى العربة ({quantity})
               </button>

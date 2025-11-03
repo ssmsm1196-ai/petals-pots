@@ -29,6 +29,7 @@ function Products({ category }) {
           "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcReFhlzSoWKexxrPbE9o8ERa-6iqvYqOSOOhg&s",
         ],
         discount: 10,
+        rating: 4,
       },
       {
         id: 2,
@@ -39,6 +40,7 @@ function Products({ category }) {
           "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcReFhlzSoWKexxrPbE9o8ERa-6iqvYqOSOOhg&s",
         ],
         discount: 0,
+        rating: 5,
       },
     ],
     artificial: [
@@ -49,6 +51,7 @@ function Products({ category }) {
         description: t("artificialDesc"),
         images: ["/images/artificial1.jpg"],
         discount: 5,
+        rating: 3,
       },
       {
         id: 2,
@@ -57,6 +60,7 @@ function Products({ category }) {
         description: t("artificialDesc"),
         images: ["/images/artificial2.jpg"],
         discount: 0,
+        rating: 4,
       },
     ],
     weddings: [
@@ -67,6 +71,7 @@ function Products({ category }) {
         description: t("weddingDesc"),
         images: ["/images/wedding1.jpg"],
         discount: 15,
+        rating: 5,
       },
       {
         id: 2,
@@ -75,6 +80,7 @@ function Products({ category }) {
         description: t("weddingDesc"),
         images: ["/images/wedding2.jpg"],
         discount: 0,
+        rating: 4,
       },
     ],
   };
@@ -112,6 +118,13 @@ function Products({ category }) {
       : category === "weddings"
       ? t("weddings")
       : t("home");
+
+  const renderStars = (count) =>
+    Array.from({ length: 5 }, (_, i) => (
+      <span key={i} style={{ color: '#ffcc00', fontSize: '1rem' }}>
+        {i < count ? '★' : '☆'}
+      </span>
+    ));
 
   return (
     <div className="Products">
@@ -156,41 +169,53 @@ function Products({ category }) {
         animate={{ opacity: 1 }}
         transition={{ delay: 0.4, duration: 0.6 }}
       >
-        {currentProducts.map((product) => (
-          <motion.div
-            key={product.id}
-            className="product-card"
-            transition={{ type: "spring", stiffness: 200 }}
-          >
-            <img
-              src={product.images[0]}
-              alt={product.name}
-              className="product-image"
-            />
-            <div className="product-details">
-              <h3 className="product-name">{product.name}</h3>
-              <div className="product-price">
-                <span>
-                  {product.price} {t("currency")}
-                </span>
+        {currentProducts.map((product) => {
+          const price = product.price ?? 0;
+          const discount = product.discount ?? 0;
+          const discountedPrice = discount > 0 ? (price - (price * discount) / 100).toFixed(2) : price.toFixed(2);
+
+          return (
+            <motion.div
+              key={product.id}
+              className="product-card"
+              transition={{ type: "spring", stiffness: 200 }}
+            >
+              {/* فتح التفاصيل عند الضغط على الصورة */}
+              <img
+                src={product.images[0]}
+                alt={product.name}
+                className="product-image"
+                onClick={() => setSelectedProduct(product)}
+              />
+              <div className="product-details">
+                <h3 className="product-name">{product.name}</h3>
+                <p className="product-description">{product.description}</p>
+                <div className="product-price">
+                  {discount > 0 && (
+                    <span className="original-price">{price} {t("currency")}</span>
+                  )}
+                  <span className="discount-price">{discountedPrice} {t("currency")}</span>
+                  {discount > 0 && <span className="discount">-{discount}%</span>}
+                </div>
+                <div className="product-rating">{renderStars(product.rating ?? 0)}</div>
+                <div className="product-actions-vertical">
+                  <button
+                    className="btn-buy"
+                    onClick={() => setSelectedProduct(product)}
+                  >
+                    {t("orderNow")}
+                  </button>
+                  <button
+                    className="btn-cart"
+                    onClick={() => addToCart({ ...product, qty: 1, price })}
+                  >
+                    {t("addToCart")}
+                  </button>
+                </div>
               </div>
-              <div className="product-actions-vertical">
-                <button
-                  className="btn-buy"
-                  onClick={() => setSelectedProduct(product)}
-                >
-                  {t("orderNow")}
-                </button>
-                <button
-                  className="btn-cart"
-                  onClick={() => addToCart(product)}
-                >
-                  {t("addToCart")}
-                </button>
-              </div>
-            </div>
-          </motion.div>
-        ))}
+            </motion.div>
+          );
+        })}
       </motion.div>
 
       <motion.div
@@ -202,9 +227,7 @@ function Products({ category }) {
         {Array.from({ length: totalPages }).map((_, index) => (
           <button
             key={index}
-            className={`page-btn ${
-              index + 1 === currentPage ? "active" : ""
-            }`}
+            className={`page-btn ${index + 1 === currentPage ? "active" : ""}`}
             onClick={() => setCurrentPage(index + 1)}
           >
             {index + 1}
@@ -212,7 +235,7 @@ function Products({ category }) {
         ))}
       </motion.div>
 
-      {/* ✅ مودال التفاصيل */}
+      {/* مودال التفاصيل */}
       {selectedProduct && (
         <DetailsProduct
           product={selectedProduct}
