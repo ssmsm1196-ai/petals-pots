@@ -16,15 +16,18 @@ export const CartProvider = ({ children }) => {
     localStorage.setItem("cartItems", JSON.stringify(cartItems));
   }, [cartItems]);
 
-  const addToCart = (product) => {
+  // ✅ تعديل addToCart بحيث يضيف الكمية المحددة من تفاصيل المنتج
+  const addToCart = (product, quantity = 1) => {
     setCartItems((prev) => {
       const exist = prev.find((item) => item.id === product.id);
       if (exist) {
         return prev.map((item) =>
-          item.id === product.id ? { ...item, qty: item.qty + 1 } : item
+          item.id === product.id
+            ? { ...item, qty: item.qty + quantity }
+            : item
         );
       } else {
-        return [...prev, { ...product, qty: 1 }];
+        return [...prev, { ...product, qty: quantity }];
       }
     });
 
@@ -55,7 +58,9 @@ export const CartProvider = ({ children }) => {
     setCartItems((prev) => prev.filter((item) => item.id !== id));
 
   const total = cartItems.reduce(
-    (acc, item) => acc + (item.price ?? item.discountPrice ?? item.originalPrice) * item.qty,
+    (acc, item) =>
+      acc +
+      (item.price ?? item.discountPrice ?? item.originalPrice) * item.qty,
     0
   );
 
@@ -63,7 +68,7 @@ export const CartProvider = ({ children }) => {
     <CartContext.Provider
       value={{
         cartItems,
-        addToCart,
+        addToCart, // ✅ الآن يستقبل كمية
         increaseQty,
         decreaseQty,
         removeItem,
@@ -74,3 +79,5 @@ export const CartProvider = ({ children }) => {
     </CartContext.Provider>
   );
 };
+
+export default CartProvider;

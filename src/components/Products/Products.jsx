@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { useTranslation } from "react-i18next";
 import { useCart } from "../../context/CartContext";
+import DetailsProduct from "../DetailsProduct/DetailsProduct";
 import "./Products.css";
 
 function Products({ category }) {
@@ -13,22 +14,68 @@ function Products({ category }) {
   const [sort, setSort] = useState("");
   const [search, setSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
+  const [selectedProduct, setSelectedProduct] = useState(null);
   const itemsPerPage = 8;
 
   const dataMap = {
     natural: [
-      { id: 1, title: t("naturalRoses.title") + " 1", price: 120, image: "data:image/jpeg;base64,/9j/" },
-      { id: 2, title: t("naturalRoses.title") + " 2", price: 150, image: "data:image/jpeg;base64,/9j/k=" },
-      { id: 3, title: t("naturalRoses.title") + " 3", price: 180, image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ7Nxa8OR296EqB_WuVNYOXJ0lrrGR4dsKdUg&s" },
-      { id: 4, title: t("naturalRoses.title") + " 4", price: 100, image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcReFhlzSoWKexxrPbE9o8ERa-6iqvYqOSOOhg&s" },
+      {
+        id: 1,
+        name: t("naturalRoses.name") + " 1",
+        price: 120,
+        description: t("naturalRoses.desc"),
+        images: [
+          "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ7Nxa8OR296EqB_WuVNYOXJ0lrrGR4dsKdUg&s",
+          "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcReFhlzSoWKexxrPbE9o8ERa-6iqvYqOSOOhg&s",
+        ],
+        discount: 10,
+      },
+      {
+        id: 2,
+        name: t("naturalRoses.name") + " 2",
+        price: 150,
+        description: t("naturalRoses.desc"),
+        images: [
+          "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcReFhlzSoWKexxrPbE9o8ERa-6iqvYqOSOOhg&s",
+        ],
+        discount: 0,
+      },
     ],
     artificial: [
-      { id: 1, title: t("artificial") + " 1", price: 80, image: "/images/artificial1.jpg" },
-      { id: 2, title: t("artificial") + " 2", price: 90, image: "/images/artificial2.jpg" },
+      {
+        id: 1,
+        name: t("artificial") + " 1",
+        price: 80,
+        description: t("artificialDesc"),
+        images: ["/images/artificial1.jpg"],
+        discount: 5,
+      },
+      {
+        id: 2,
+        name: t("artificial") + " 2",
+        price: 90,
+        description: t("artificialDesc"),
+        images: ["/images/artificial2.jpg"],
+        discount: 0,
+      },
     ],
     weddings: [
-      { id: 1, title: t("weddings") + " 1", price: 250, image: "/images/wedding1.jpg" },
-      { id: 2, title: t("weddings") + " 2", price: 280, image: "/images/wedding2.jpg" },
+      {
+        id: 1,
+        name: t("weddings") + " 1",
+        price: 250,
+        description: t("weddingDesc"),
+        images: ["/images/wedding1.jpg"],
+        discount: 15,
+      },
+      {
+        id: 2,
+        name: t("weddings") + " 2",
+        price: 280,
+        description: t("weddingDesc"),
+        images: ["/images/wedding2.jpg"],
+        discount: 0,
+      },
     ],
   };
 
@@ -40,9 +87,12 @@ function Products({ category }) {
 
   useEffect(() => {
     let temp = [...products];
-    if (search) temp = temp.filter((p) => p.title.toLowerCase().includes(search.toLowerCase()));
-    if (sort === "az") temp.sort((a, b) => a.title.localeCompare(b.title));
-    if (sort === "za") temp.sort((a, b) => b.title.localeCompare(a.title));
+    if (search)
+      temp = temp.filter((p) =>
+        p.name.toLowerCase().includes(search.toLowerCase())
+      );
+    if (sort === "az") temp.sort((a, b) => a.name.localeCompare(b.name));
+    if (sort === "za") temp.sort((a, b) => b.name.localeCompare(a.name));
     if (sort === "low") temp.sort((a, b) => a.price - b.price);
     if (sort === "high") temp.sort((a, b) => b.price - a.price);
     setFiltered(temp);
@@ -54,20 +104,44 @@ function Products({ category }) {
   const currentProducts = filtered.slice(indexOfFirst, indexOfLast);
   const totalPages = Math.ceil(filtered.length / itemsPerPage);
 
-  const categoryTitle =
-    category === "natural" ? t("natural") :
-    category === "artificial" ? t("artificial") :
-    category === "weddings" ? t("weddings") : t("home");
+  const categoryname =
+    category === "natural"
+      ? t("natural")
+      : category === "artificial"
+      ? t("artificial")
+      : category === "weddings"
+      ? t("weddings")
+      : t("home");
 
   return (
     <div className="Products">
-      <motion.h2 className="products-title" initial={{ opacity: 0, y: -40 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
-        {categoryTitle}
+      <motion.h2
+        className="products-name"
+        initial={{ opacity: 0, y: -40 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+      >
+        {categoryname}
       </motion.h2>
 
-      <motion.div className="filter-bar" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2, duration: 0.6 }}>
-        <input type="text" placeholder={t("searchPlaceholder")} value={search} onChange={(e) => setSearch(e.target.value)} className="search-input"/>
-        <select onChange={(e) => setSort(e.target.value)} value={sort} className="sort-select">
+      <motion.div
+        className="filter-bar"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.2, duration: 0.6 }}
+      >
+        <input
+          type="text"
+          placeholder={t("searchPlaceholder")}
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          className="search-input"
+        />
+        <select
+          onChange={(e) => setSort(e.target.value)}
+          value={sort}
+          className="sort-select"
+        >
           <option value="">{t("search")}</option>
           <option value="az">{t("filters.az")}</option>
           <option value="za">{t("filters.za")}</option>
@@ -76,29 +150,76 @@ function Products({ category }) {
         </select>
       </motion.div>
 
-      <motion.div className="products-grid" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.4, duration: 0.6 }}>
+      <motion.div
+        className="products-grid"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.4, duration: 0.6 }}
+      >
         {currentProducts.map((product) => (
-          <motion.div key={product.id} className="product-card" transition={{ type: "spring", stiffness: 200 }}>
-            <img src={product.image} alt={product.title} className="product-image"/>
+          <motion.div
+            key={product.id}
+            className="product-card"
+            transition={{ type: "spring", stiffness: 200 }}
+          >
+            <img
+              src={product.images[0]}
+              alt={product.name}
+              className="product-image"
+            />
             <div className="product-details">
-              <h3 className="product-name">{product.title}</h3>
-              <div className="product-price"><span>{product.price} {t("currency")}</span></div>
+              <h3 className="product-name">{product.name}</h3>
+              <div className="product-price">
+                <span>
+                  {product.price} {t("currency")}
+                </span>
+              </div>
               <div className="product-actions-vertical">
-                <button className="btn-buy">{t("orderNow")}</button>
-                <button className="btn-cart" onClick={() => addToCart(product)}>{t("addToCart")}</button>
+                <button
+                  className="btn-buy"
+                  onClick={() => setSelectedProduct(product)}
+                >
+                  {t("orderNow")}
+                </button>
+                <button
+                  className="btn-cart"
+                  onClick={() => addToCart(product)}
+                >
+                  {t("addToCart")}
+                </button>
               </div>
             </div>
           </motion.div>
         ))}
       </motion.div>
 
-      <motion.div className="pagination" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.6 }}>
+      <motion.div
+        className="pagination"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.6 }}
+      >
         {Array.from({ length: totalPages }).map((_, index) => (
-          <button key={index} className={`page-btn ${index + 1 === currentPage ? "active" : ""}`} onClick={() => setCurrentPage(index + 1)}>
+          <button
+            key={index}
+            className={`page-btn ${
+              index + 1 === currentPage ? "active" : ""
+            }`}
+            onClick={() => setCurrentPage(index + 1)}
+          >
             {index + 1}
           </button>
         ))}
       </motion.div>
+
+      {/* ✅ مودال التفاصيل */}
+      {selectedProduct && (
+        <DetailsProduct
+          product={selectedProduct}
+          onClose={() => setSelectedProduct(null)}
+          onAddToCart={addToCart}
+        />
+      )}
     </div>
   );
 }
