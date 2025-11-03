@@ -193,4 +193,21 @@
     top: 20px;
     right: 30px;
   }
+  .CenterNav .iconsNav {
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    left: -100px;
+    top: 158px;
+  }
+  .CenterNav .rightNav {
+  font-size: 20px;
+  cursor: pointer;
+  transition: 0.5s;
+  white-space: nowrap;
+  color: var(--main-color);
+  left: 0;
+}
 }

@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import './CenterNav.css';
 import logo from '../../../assets/image/logo.png';
-import { FaHeart } from "react-icons/fa";
-import { FaLocationDot } from "react-icons/fa6";
-import { BiSolidShoppingBagAlt, BiMenu } from "react-icons/bi";
+import { BiMenu } from "react-icons/bi";
+import { PiShoppingCartDuotone } from "react-icons/pi";
 import { NavLink } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import ShoppingCart from '../../ShoppingCart/ShoppingCart';
@@ -26,22 +25,16 @@ function CenterNav() {
 
   return (
     <div className={`CenterNav d-flex justify-content-between align-items-center row ${i18n.language === 'ar' ? 'rtl' : 'ltr'}`}>
-      <div className='my-3 col-lg-4 col-md-6 col-sm-12 d-flex justify-content-center gap-4 align-items-center nav-section'>
-        <div className='rightNav d-flex justify-content-center flex-column align-items-center' role="button" tabIndex={0}>
-          <FaLocationDot className='w-100' aria-hidden="true" />
-          <span>{t('storeLocation')}</span>
-        </div>
-        <div className='rightNav d-flex justify-content-center flex-column align-items-center' role="button" tabIndex={0}>
-          <FaHeart className='w-100' aria-hidden="true" />
-          <span>{t('favorites')}</span>
-        </div>
+      <div className='iconsNav my-3 col-lg-4 col-md-6 col-sm-12 d-flex justify-content-center gap-4 align-items-center nav-section'>
+
+
         <div
           className='rightNav d-flex justify-content-center flex-column align-items-center'
           role="button"
           tabIndex={0}
           onClick={() => setShowCart(true)}
         >
-          <BiSolidShoppingBagAlt className='w-100' aria-hidden="true" />
+          <PiShoppingCartDuotone className='w-100' aria-hidden="true" />
           <span>{t('cart')}</span>
         </div>
       </div>
@@ -70,7 +63,7 @@ function CenterNav() {
       <ul className='main-menu' role="menubar" aria-label={t('mainMenu')}>
         <li><NavLink to='/' end>{t('home')}</NavLink></li>
         <li><NavLink to='/natural'>{t('natural')}</NavLink></li>
-        <li><NavLink to='/artificial'>{t('artificial')}</NavLink></li>
+        <li><NavLink to='/natural'>{t('natural')}</NavLink></li>
         <li><NavLink to='/arrangements'>{t('arrangements')}</NavLink></li>
         <li><NavLink to='/weddings'>{t('weddings')}</NavLink></li>
         <li><NavLink to='/birthdays'>{t('birthdays')}</NavLink></li>
@@ -84,7 +77,7 @@ function CenterNav() {
           <ul>
             <li><NavLink to='/' end onClick={handleNavClick}>{t('home')}</NavLink></li>
             <li><NavLink to='/natural' onClick={handleNavClick}>{t('natural')}</NavLink></li>
-            <li><NavLink to='/artificial' onClick={handleNavClick}>{t('artificial')}</NavLink></li>
+            <li><NavLink to='/natural' onClick={handleNavClick}>{t('artificial')}</NavLink></li>
             <li><NavLink to='/arrangements' onClick={handleNavClick}>{t('arrangements')}</NavLink></li>
             <li><NavLink to='/weddings' onClick={handleNavClick}>{t('weddings')}</NavLink></li>
             <li><NavLink to='/birthdays' onClick={handleNavClick}>{t('birthdays')}</NavLink></li>
