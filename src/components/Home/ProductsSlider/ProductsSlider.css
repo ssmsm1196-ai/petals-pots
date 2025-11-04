@@ -32,14 +32,13 @@
   background-color: var(--main-color);
   color: var(--light-color);
   border: none;
-  /* padding: 8px 18px; */
   font-size: 1.5rem;
   border-radius: 50%;
   cursor: pointer;
   transition: 0.3s;
   width: 40px;
   height: 40px;
-    display: flex;
+  display: flex;
   justify-content: center;
   align-items: center;
 }
@@ -65,8 +64,7 @@
 }
 
 .product-card:hover {
-    box-shadow: var(--main-color) 0px 7px 29px 0px;
-    box-shadow: var(--main-color) 0px 20px 30px -10px;
+  box-shadow: var(--main-color) 0px 20px 30px -10px;
 }
 
 /* ===== الصورة ===== */
@@ -146,25 +144,54 @@
   transform: scale(1.05);
 }
 
-/* ===== Pagination أسفل الكروت ===== */
-/* .swiper-pagination {
-  margin-top: 20px;
-  text-align: center;
+/* ===== Skeleton Loading Effect ===== */
+.skeleton-card {
+  background-color: #f2f2f2;
+  border-radius: 15px;
+  border: 2px solid var(--main-color);
+  overflow: hidden;
+  position: relative;
 }
 
-.swiper-pagination-bullet {
-    display: none;
-  background-color: var(--main-color);
-  opacity: 0.6;
-  width: 50px;
-  height: 12px;
-  transition: opacity 0.3s ease, transform 0.3s ease;
+.skeleton-image {
+  width: 100%;
+  height: 180px;
+  background-color: #e5e5e5;
 }
 
-.swiper-pagination-bullet-active {
-  opacity: 1;
-  transform: scale(1.2);
-} */
+.skeleton-text {
+  height: 16px;
+  background-color: #e0e0e0;
+  border-radius: 6px;
+  margin: 10px auto;
+  width: 70%;
+}
+
+.skeleton-btn {
+  height: 35px;
+  background-color: #e0e0e0;
+  border-radius: 10px;
+  margin: 10px auto;
+  width: 80%;
+}
+
+/* تأثير الـ shimmer */
+.skeleton-card::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -150px;
+  height: 100%;
+  width: 150px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+  animation: shimmer 1.3s infinite;
+}
+
+@keyframes shimmer {
+  100% {
+    left: 100%;
+  }
+}
 
 /* ===== Responsive ===== */
 @media (max-width: 1200px) {
@@ -173,22 +200,18 @@
   }
 }
 
-
-
 @media (max-width: 480px) {
   .btn-nav {
+    width: 30px;
+    height: 30px;
+  }
 
-  width: 30px;
-  height: 30px;
-
-}
-.slider-title {
-  font-size: 20px;
-  color: var(--main-color);
-  font-weight: 700;
-  white-space: nowrap;
-}
-
+  .slider-title {
+    font-size: 20px;
+    color: var(--main-color);
+    font-weight: 700;
+    white-space: nowrap;
+  }
 
   .btn-buy,
   .btn-cart {

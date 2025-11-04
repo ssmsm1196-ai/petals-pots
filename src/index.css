@@ -30,3 +30,24 @@ overflow-x: hidden;
 
     
 }
+.scroll-to-top {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  background-color: var(--main-color, #c2185b);
+  color: white;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  padding: 12px 14px;
+  border-radius: 50%;
+  font-size: 18px;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s ease;
+  z-index: 9999;
+}
+
+.scroll-to-top:hover {
+  background-color: #a3154c;
+  transform: translateY(-3px);
+}
