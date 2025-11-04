@@ -47,8 +47,8 @@ export const ProductProvider = ({ children }) => {
     try {
       await Promise.all([
         fetchTableSafe("natural", setProductsNatural),
-        fetchTableSafe("artificial", setProductsArtificial),
-        fetchTableSafe("weddings", setProductsWeddings),
+        // fetchTableSafe("artificial", setProductsArtificial),
+        // fetchTableSafe("weddings", setProductsWeddings),
       ]);
     } catch (err) {
       setError("Failed to fetch products");
