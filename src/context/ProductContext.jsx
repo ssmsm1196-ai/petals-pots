@@ -16,15 +16,23 @@ export const ProductProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // دالة عامة لجلب جدول محدد
-  const fetchTable = async (tableName, setState) => {
+  // دالة عامة لجلب جدول محدد بطريقة آمنة
+  const fetchTableSafe = async (tableName, setState) => {
     try {
       const { data, error } = await supabase
         .from(tableName)
         .select("*")
         .order("created_at", { ascending: false });
 
-      if (error) throw error;
+      if (error) {
+        if (error.message.includes("Could not find the table")) {
+          console.warn(`Warning: Table '${tableName}' does not exist yet.`);
+          setState([]);
+          return;
+        }
+        throw error;
+      }
+
       setState(data || []);
     } catch (err) {
       console.error(`Error fetching ${tableName}:`, err.message);
@@ -38,9 +46,9 @@ export const ProductProvider = ({ children }) => {
     setError(null);
     try {
       await Promise.all([
-        fetchTable("natural", setProductsNatural),
-        fetchTable("artificial", setProductsArtificial),
-        fetchTable("weddings", setProductsWeddings),
+        fetchTableSafe("natural", setProductsNatural),
+        fetchTableSafe("artificial", setProductsArtificial),
+        fetchTableSafe("weddings", setProductsWeddings),
       ]);
     } catch (err) {
       setError("Failed to fetch products");
