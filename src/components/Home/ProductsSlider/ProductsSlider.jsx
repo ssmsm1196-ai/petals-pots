@@ -1,23 +1,22 @@
-import React, { useState, forwardRef, useImperativeHandle, useEffect } from 'react';
-import './ProductsSlider.css';
-import { Swiper, SwiperSlide } from 'swiper/react';
-import { Autoplay } from 'swiper/modules';
-import { useTranslation } from 'react-i18next';
-import 'swiper/css';
-import { useCart } from '../../../context/CartContext';
-import DetailsProduct from '../../DetailsProduct/DetailsProduct';
+import React, { useState, forwardRef, useImperativeHandle, useEffect, useMemo, useCallback } from "react";
+import "./ProductsSlider.css";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Autoplay, Navigation, Pagination } from "swiper/modules";
+import { useTranslation } from "react-i18next";
+import "swiper/css";
+import "swiper/css/autoplay";
+import "swiper/css/navigation";
+import "swiper/css/pagination";
 
-const ProductsSlider = forwardRef(({ products }, ref) => {
+const ProductsSlider = forwardRef(({ products = [], addToCart, onViewDetails }, ref) => {
   const { t, i18n } = useTranslation();
-  const { addToCart } = useCart();
   const [swiperInstance, setSwiperInstance] = useState(null);
   const [isRTL, setIsRTL] = useState(false);
-  const [selectedProduct, setSelectedProduct] = useState(null);
 
   useEffect(() => {
-    const rtl = i18n.language === 'ar';
+    const rtl = i18n.language === "ar";
     setIsRTL(rtl);
-    document.documentElement.setAttribute('dir', rtl ? 'rtl' : 'ltr');
+    document.documentElement.setAttribute("dir", rtl ? "rtl" : "ltr");
   }, [i18n.language]);
 
   useImperativeHandle(ref, () => ({
@@ -25,100 +24,122 @@ const ProductsSlider = forwardRef(({ products }, ref) => {
     slidePrev: () => swiperInstance?.slidePrev(),
   }));
 
-  const renderStars = (count) =>
-    Array.from({ length: 5 }, (_, i) => (
-      <span key={i} style={{ color: '#ffcc00', fontSize: '1rem' }}>
-        {i < count ? '★' : '☆'}
-      </span>
-    ));
+  const handleViewDetails = useCallback(
+    (product) => {
+      onViewDetails && onViewDetails(product);
+    },
+    [onViewDetails]
+  );
+
+  const handleAddToCart = useCallback(
+    (product, discountedPrice) => {
+      addToCart && addToCart({ ...product, qty: 1, price: discountedPrice });
+    },
+    [addToCart]
+  );
+
+  const isNewProduct = useCallback((product) => {
+    if (!product.created_at) return false;
+    const createdAt = new Date(product.created_at);
+    const now = new Date();
+    return (now - createdAt) / (1000 * 60 * 60) <= 24;
+  }, []);
+
+  const truncateWords = useCallback((text, wordLimit = 3) => {
+    if (!text) return "";
+    const words = text.split(" ");
+    return words.length > wordLimit ? words.slice(0, wordLimit).join(" ") + "..." : text;
+  }, []);
+
+  const processedProducts = useMemo(
+    () =>
+      products.map((product) => {
+        const mainImage =
+          Array.isArray(product.images) && product.images.length > 0
+            ? product.images[0]
+            : "/placeholder.jpg";
+
+        const price = product.price ?? 0;
+        const discount = product.discount ?? 0;
+        const discountedPrice = discount > 0 ? +(price - (price * discount) / 100).toFixed(2) : price;
+
+        const productName = truncateWords(product.name, 3);
+        const productDescription = truncateWords(product.description, 3);
+
+        return {
+          ...product,
+          mainImage,
+          price,
+          discount,
+          discountedPrice,
+          productName,
+          productDescription,
+        };
+      }),
+    [products, truncateWords]
+  );
+
+  if (!products || products.length === 0) {
+    return <p className="no-products">{t("noProducts")}</p>;
+  }
 
   return (
-    <div className={`ProductsSlider ${isRTL ? 'rtl-slider' : 'ltr-slider'}`} dir={isRTL ? 'rtl' : 'ltr'}>
+    <div className={`ProductsSlider ${isRTL ? "rtl-slider" : "ltr-slider"}`} dir={isRTL ? "rtl" : "ltr"}>
       <Swiper
-        key={isRTL ? 'rtl' : 'ltr'}
+        key={isRTL ? "rtl" : "ltr"}
         onSwiper={setSwiperInstance}
-        modules={[Autoplay]}
-        spaceBetween={10}
-        slidesPerView={5}
-        autoplay={{ delay: 2000, disableOnInteraction: false }}
-        loop={true}
+        modules={[Autoplay, Navigation, Pagination]}
+        spaceBetween={15}
+        slidesPerView={Math.min(products.length, 5)}
+        loop={products.length > 1}
         speed={800}
+        autoplay={{ delay: 2500, disableOnInteraction: false }}
         breakpoints={{
-          0: { slidesPerView: 1 },
-          480: { slidesPerView: 2 },
-          768: { slidesPerView: 3 },
-          992: { slidesPerView: 4 },
-          1200: { slidesPerView: 5 },
+          0: { slidesPerView: Math.min(products.length, 1) },
+          480: { slidesPerView: Math.min(products.length, 2) },
+          768: { slidesPerView: Math.min(products.length, 3) },
+          992: { slidesPerView: Math.min(products.length, 4) },
+          1200: { slidesPerView: Math.min(products.length, 5) },
         }}
-        dir={isRTL ? 'rtl' : 'ltr'}
+        dir={isRTL ? "rtl" : "ltr"}
         className="product-swiper"
       >
-        {products.map((product) => {
-          const images = Array.isArray(product.images) && product.images.length > 0
-            ? product.images
-            : [product.image || "https://via.placeholder.com/300"];
-          const price = product.price ?? 0;
-          const discount = product.discount ?? 0;
-          const discountPrice = discount > 0 ? (price - (price * discount) / 100).toFixed(2) : price.toFixed(2);
-          const description = product.description ?? "لا يوجد وصف للمنتج";
-          const rating = product.rating ?? 0;
-          const name = product.name ?? "بدون اسم";
-
-          const productData = {
-            ...product,
-            images,
-            price,
-            discount,
-            description,
-            rating,
-            name
-          };
-
-          return (
-            <SwiperSlide key={product.id} className="product-card">
-              {/* فتح التفاصيل عند الضغط على الصورة */}
+        {processedProducts.map((product) => (
+          <SwiperSlide key={product.id} className="product-card">
+            <div className="product-image-container">
               <img
-                src={images[0]}
-                alt={name}
+                src={product.mainImage}
+                alt={product.name}
                 className="product-image"
-                loading="lazy"
-                onClick={() => setSelectedProduct(productData)}
+                onClick={() => handleViewDetails(product)}
               />
-              <div className="product-details">
-                <h3 className="product-name">{name}</h3>
-                <p className="product-description">{description}</p>
-                <div className="product-price">
-                  {discount > 0 && <span className="original-price">{price.toFixed(2)} {t('currency')}</span>}
-                  <span className="discount-price">{discountPrice} {t('currency')}</span>
-                  {discount > 0 && <span className="discount">-{discount}%</span>}
-                </div>
-                <div className="product-rating">{renderStars(rating)}</div>
-                <div className="product-actions-vertical">
-                  {/* زر "اطلب الآن" يفتح مودال التفاصيل */}
-                  <button className="btn-buy" onClick={() => setSelectedProduct(productData)}>
-                    {t('orderNow')}
-                  </button>
-                  {/* زر "أضف للعربة" يضيف مباشرة */}
-                  <button className="btn-cart" onClick={() => addToCart({ ...productData, qty: 1, price })}>
-                    {t('addToCart')}
-                  </button>
-                </div>
-              </div>
-            </SwiperSlide>
-          );
-        })}
-      </Swiper>
+              {product.discount > 0 && <span className="discount-badge">{product.discount}%</span>}
+              {isNewProduct(product) && <span className="new-badge">NEW</span>}
+            </div>
 
-      {/* مودال التفاصيل */}
-      {selectedProduct && (
-        <DetailsProduct
-          product={selectedProduct}
-          onClose={() => setSelectedProduct(null)}
-          onAddToCart={addToCart}
-        />
-      )}
+            <div className="product-details">
+              <h3 className="product-name">{product.productName}</h3>
+              <p className="product-description">{product.productDescription}</p>
+
+              <div className="product-price">
+                {product.discount > 0 && <span className="original-price">{product.price} {t("currency")}</span>}
+                <span className="discount-price">{product.discountedPrice} {t("currency")}</span>
+              </div>
+
+              <div className="product-actions-vertical">
+                <button className="btn-buy" onClick={() => handleViewDetails(product)}>
+                  {t("orderNow")}
+                </button>
+                <button className="btn-cart" onClick={() => handleAddToCart(product, product.discountedPrice)}>
+                  {t("addToCart")}
+                </button>
+              </div>
+            </div>
+          </SwiperSlide>
+        ))}
+      </Swiper>
     </div>
   );
 });
 
-export default ProductsSlider;
+export default React.memo(ProductsSlider);

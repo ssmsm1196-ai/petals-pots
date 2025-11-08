@@ -1,18 +1,17 @@
-// Article.jsx
-import React from "react";
+import React, { useMemo } from "react";
 import { motion } from "framer-motion";
 import { useTranslation } from "react-i18next";
 import "./Article.css";
 
-function Article() {
+const Article = React.memo(function Article() {
   const { t, i18n } = useTranslation();
 
-  const containerVariants = {
+  const containerVariants = useMemo(() => ({
     hidden: { opacity: 0, y: 50 },
     visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: "easeOut" } },
-  };
+  }), []);
 
-  const sections = [
+  const sections = useMemo(() => [
     {
       title: t("article.sections.naturalFlowers.title"),
       text: t("article.sections.naturalFlowers.text"),
@@ -38,7 +37,7 @@ function Article() {
       title: t("article.sections.whyUs.title"),
       text: t("article.sections.whyUs.text"),
     },
-  ];
+  ], [t]);
 
   return (
     <motion.article
@@ -89,6 +88,6 @@ function Article() {
       </motion.footer>
     </motion.article>
   );
-}
+});
 
 export default Article;

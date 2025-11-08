@@ -1,11 +1,11 @@
-/* ✅ خلفية المودال */
+/* المودال والخلفية */
 .DetailsProduct-overlay {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.6);
+  background: rgba(0,0,0,0.6);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -13,47 +13,38 @@
   animation: fadeIn 0.3s ease-in-out;
 }
 
-/* ✅ المودال نفسه */
 .DetailsProduct-modal {
   background: #fff;
   width: 90%;
   max-width: 1000px;
   border-radius: 16px;
   position: relative;
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 8px 25px rgba(0,0,0,0.3);
   animation: scaleIn 0.3s ease-in-out;
-  padding: 10px;
+  padding: 20px;
+  max-height: 90vh;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
-/* ✅ زر الإغلاق (خاص بالديتيلز فقط) */
-.DetailsProduct-modal .close-btn {
-  position: absolute;
-  top: 12px;
-  left: 15px; /* 🔹 تم نقله إلى اليسار */
-  background: none;
-  border: none;
-  font-size: 28px;
-  font-weight: bold;
+.close-btn {
+
   color: var(--main-color, #e91e63);
-  cursor: pointer;
-  transition: all 0.3s ease;
-  z-index: 1000;
+
+}
+.close-btn:hover { 
+  color: #c2185b; 
+  transform: scale(1.1); 
 }
 
-.DetailsProduct-modal .close-btn:hover {
-  color: #c2185b;
-  transform: scale(1.1);
-}
-
-/* ✅ المحتوى */
 .DetailsProduct-content {
   display: flex;
   flex-wrap: wrap;
-  padding: 20px;
   gap: 25px;
+  padding: 20px 0;
 }
 
-/* ✅ الصور */
+/* الصور */
 .image-section {
   flex: 1 1 45%;
   display: flex;
@@ -64,19 +55,21 @@
 .zoom-container {
   position: relative;
   overflow: hidden;
-  width: 100%;
+  width: 90%;
   max-width: 400px;
+  height: 400px;
   border-radius: 12px;
   cursor: zoom-in;
   background-repeat: no-repeat;
   background-size: 200%;
   transition: background-position 0.1s ease;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
   margin-bottom: 15px;
 }
 
 .zoom-container img {
   width: 100%;
+  height: 100%;
   border-radius: 12px;
   display: block;
   transition: opacity 0.2s ease;
@@ -94,8 +87,8 @@
 }
 
 .thumbnail {
-  width: 70px;
-  height: 70px;
+  width: 60px;
+  height: 60px;
   border-radius: 8px;
   cursor: pointer;
   object-fit: cover;
@@ -109,7 +102,7 @@
   transform: scale(1.05);
 }
 
-/* ✅ التفاصيل */
+/* التفاصيل */
 .info-section {
   flex: 1 1 45%;
   display: flex;
@@ -118,35 +111,35 @@
 }
 
 .product-name {
-  font-size: 26px;
+  font-size: 24px;
   font-weight: bold;
-  margin-bottom: 10px;
+  margin-bottom: 8px;
   color: #222;
 }
 
 .description {
   color: #555;
-  line-height: 1.6;
-  font-size: 16px;
-  margin-bottom: 15px;
+  line-height: 1.5;
+  font-size: 15px;
+  margin-bottom: 12px;
 }
 
-/* ✅ السعر */
+/* السعر */
 .price-box {
   display: flex;
   align-items: center;
   gap: 10px;
-  margin-bottom: 15px;
+  margin-bottom: 12px;
 }
 
 .old-price {
   text-decoration: line-through;
   color: #999;
-  font-size: 15px;
+  font-size: 14px;
 }
 
 .new-price {
-  font-size: 22px;
+  font-size: 20px;
   font-weight: bold;
   color: var(--main-color, #e91e63);
 }
@@ -154,26 +147,26 @@
 .discount {
   background: #e91e63;
   color: #fff;
-  padding: 3px 8px;
+  padding: 3px 6px;
   border-radius: 6px;
-  font-size: 13px;
+  font-size: 12px;
 }
 
-/* ✅ الكمية */
+/* الكمية */
 .quantity-control {
   display: flex;
   align-items: center;
-  gap: 15px;
-  margin-bottom: 20px;
+  gap: 12px;
+  margin-bottom: 16px;
 }
 
 .quantity-control button {
-  width: 36px;
-  height: 36px;
+  width: 34px;
+  height: 34px;
   background: #eee;
   border: 1px solid #ccc;
   border-radius: 6px;
-  font-size: 18px;
+  font-size: 16px;
   cursor: pointer;
   transition: all 0.3s ease;
 }
@@ -184,26 +177,26 @@
 }
 
 .quantity-control span {
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 600;
 }
 
-/* ✅ الأزرار (عمودية تحت التفاصيل مباشرة) */
+/* الأزرار */
 .action-buttons.column-layout {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 10px;
   margin-top: 10px;
 }
 
 .action-buttons button {
   width: 100%;
-  padding: 12px;
+  padding: 10px;
   border: none;
   border-radius: 10px;
   cursor: pointer;
   font-weight: 600;
-  font-size: 16px;
+  font-size: 15px;
   transition: all 0.3s ease;
 }
 
@@ -225,37 +218,47 @@
   background: #555;
 }
 
-/* ✅ أنيميشن */
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+/* أنيميشن */
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes scaleIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
+/* ريسبونسف */
+@media (max-width: 1024px) {
+  .zoom-container { height: 350px; }
+  .thumbnail { width: 55px; height: 55px; }
+  .product-name { font-size: 22px; }
+  .description { font-size: 14px; }
+  .new-price { font-size: 18px; }
+  .old-price { font-size: 13px; }
+  .discount { font-size: 11px; padding: 2px 5px; }
+  .quantity-control button { width: 30px; height: 30px; font-size: 15px; }
+  .quantity-control span { font-size: 15px; }
+  .action-buttons button { font-size: 14px; padding: 9px; }
 }
 
-@keyframes scaleIn {
-  from { transform: scale(0.9); opacity: 0; }
-  to { transform: scale(1); opacity: 1; }
-}
-
-/* ✅ متجاوب */
 @media (max-width: 768px) {
-  .DetailsProduct-content {
-    flex-direction: column;
-    align-items: center;
-  }
+  .DetailsProduct-content { flex-direction: column; align-items: center; gap: 15px; }
+  .zoom-container { height: 280px; background-size: 150%; cursor: default; }
+  .thumbnail { width: 50px; height: 50px; }
+  .product-name { font-size: 20px; }
+  .description { font-size: 13px; }
+  .new-price { font-size: 17px; }
+  .old-price { font-size: 12px; }
+  .discount { font-size: 10px; padding: 2px 4px; }
+  .quantity-control button { width: 28px; height: 28px; font-size: 14px; }
+  .quantity-control span { font-size: 14px; }
+  .action-buttons button { font-size: 13px; padding: 8px; }
+}
 
-  .zoom-container {
-    max-width: 100%;
-    cursor: default;
-    background-size: 150%;
-  }
-
-  .action-buttons.column-layout button {
-    font-size: 15px;
-  }
-
-  .DetailsProduct-modal .close-btn {
-    top: 10px;
-    left: 10px;
-    font-size: 24px;
-  }
+@media (max-width: 480px) {
+  .zoom-container { height: 220px; }
+  .thumbnail { width: 45px; height: 45px; }
+  .product-name { font-size: 18px; }
+  .description { font-size: 12px; }
+  .new-price { font-size: 16px; }
+  .old-price { font-size: 11px; }
+  .discount { font-size: 9px; padding: 1px 3px; }
+  .quantity-control button { width: 26px; height: 26px; font-size: 13px; }
+  .quantity-control span { font-size: 13px; }
+  .action-buttons button { font-size: 12px; padding: 7px; }
 }

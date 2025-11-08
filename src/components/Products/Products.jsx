@@ -1,5 +1,5 @@
 // src/components/Products/Products.jsx
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { motion } from "framer-motion";
 import { useTranslation } from "react-i18next";
 import { useCart } from "../../context/CartContext";
@@ -7,83 +7,103 @@ import { useProducts } from "../../context/ProductContext";
 import DetailsProduct from "../DetailsProduct/DetailsProduct";
 import "./Products.css";
 
-function Products({ category }) {
+function Products({ category: initialCategory }) {
   const { t } = useTranslation();
   const { addToCart } = useCart();
-  const {
-    productsNatural,
-    productsArtificial,
-    productsWeddings,
-    loading: contextLoading,
-  } = useProducts();
+  const { allProducts, loading: contextLoading, getLocalizedProduct } =
+    useProducts();
 
-  const [filtered, setFiltered] = useState([]);
-  const [sort, setSort] = useState("");
+  const [category, setCategory] = useState(initialCategory || "all");
   const [search, setSearch] = useState("");
+  const [sort, setSort] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedProduct, setSelectedProduct] = useState(null);
 
   const itemsPerPage = 8;
 
-  // تحديد المنتجات حسب الفئة
-  useEffect(() => {
-    let categoryProducts = [];
-    switch (category) {
-      case "natural":
-        categoryProducts = productsNatural;
+  // المنتجات بعد تصفية الكاتيجوري + ترجمة المحتوى
+  const localizedProducts = useMemo(() => {
+    if (!allProducts) return [];
+    const filteredByCategory =
+      category === "all"
+        ? allProducts
+        : allProducts.filter((p) => p.category === category);
+
+    return filteredByCategory.map((p) => {
+      const prod = getLocalizedProduct(p);
+      const images = Array.isArray(prod.images) ? prod.images : [];
+      return { ...prod, images };
+    });
+  }, [allProducts, category, getLocalizedProduct]);
+
+  // المنتجات بعد البحث والترتيب
+  const filteredProducts = useMemo(() => {
+    let temp = [...localizedProducts];
+
+    if (search) {
+      temp = temp.filter((p) =>
+        p.name?.toLowerCase().includes(search.toLowerCase())
+      );
+    }
+
+    switch (sort) {
+      case "az":
+        temp.sort((a, b) => a.name.localeCompare(b.name));
         break;
-      case "artificial":
-        categoryProducts = productsArtificial;
+      case "za":
+        temp.sort((a, b) => b.name.localeCompare(a.name));
         break;
-      case "weddings":
-        categoryProducts = productsWeddings;
+      case "low":
+        temp.sort((a, b) => (a.price ?? 0) - (b.price ?? 0));
+        break;
+      case "high":
+        temp.sort((a, b) => (b.price ?? 0) - (a.price ?? 0));
         break;
       default:
-        categoryProducts = [
-          ...productsNatural,
-          ...productsArtificial,
-          ...productsWeddings,
-        ];
+        break;
     }
-    setFiltered(categoryProducts);
-    setCurrentPage(1);
-  }, [productsNatural, productsArtificial, productsWeddings, category]);
 
-  // تطبيق البحث والفرز
-  useEffect(() => {
-    let temp = [...filtered];
-    if (search)
-      temp = temp.filter((p) =>
-        p.name.toLowerCase().includes(search.toLowerCase())
-      );
-    if (sort === "az") temp.sort((a, b) => a.name.localeCompare(b.name));
-    if (sort === "za") temp.sort((a, b) => b.name.localeCompare(a.name));
-    if (sort === "low") temp.sort((a, b) => a.price - b.price);
-    if (sort === "high") temp.sort((a, b) => b.price - a.price);
-    setFiltered(temp);
-    setCurrentPage(1);
-  }, [search, sort]);
+    return temp;
+  }, [localizedProducts, search, sort]);
 
-  const indexOfLast = currentPage * itemsPerPage;
-  const indexOfFirst = indexOfLast - itemsPerPage;
-  const currentProducts = filtered.slice(indexOfFirst, indexOfLast);
-  const totalPages = Math.ceil(filtered.length / itemsPerPage);
+  // Pagination
+  const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
+  const currentProducts = useMemo(() => {
+    const start = (currentPage - 1) * itemsPerPage;
+    return filteredProducts.slice(start, start + itemsPerPage);
+  }, [filteredProducts, currentPage]);
 
-  const categoryname =
-    category === "natural"
-      ? t("natural")
-      : category === "artificial"
-      ? t("artificial")
-      : category === "weddings"
-      ? t("weddings")
-      : t("home");
+  const categories = useMemo(() => {
+    if (!allProducts) return [];
+    return Array.from(new Set(allProducts.map((p) => p.category)));
+  }, [allProducts]);
 
-  const renderStars = (count) =>
-    Array.from({ length: 5 }, (_, i) => (
-      <span key={i} style={{ color: "#ffcc00", fontSize: "1rem" }}>
-        {i < count ? "★" : "☆"}
-      </span>
-    ));
+  const categoryName = useMemo(() => {
+    switch (category) {
+      case "all":
+        return t("allProducts");
+      case "natural":
+        return t("natural");
+      case "cake":
+        return t("cake");
+      case "arrangements":
+        return t("arrangements");
+      case "wedding":
+        return t("weddings");
+      case "graduations":
+        return t("graduations");
+      case "birthday":
+        return t("birthdays");
+      default:
+        return category;
+    }
+  }, [category, t]);
+
+  const isNewProduct = (product) => {
+    if (!product.created_at) return false;
+    const diffHours = (new Date() - new Date(product.created_at)) / 36e5;
+    return diffHours <= 24;
+  };
 
   return (
     <div className="Products">
@@ -93,10 +113,10 @@ function Products({ category }) {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
       >
-        {categoryname}
+        {categoryName}
       </motion.h2>
 
-      {/* ===== فلترة ===== */}
+      {/* ===== Filter & Search ===== */}
       <motion.div
         className="filter-bar"
         initial={{ opacity: 0, y: 20 }}
@@ -110,12 +130,26 @@ function Products({ category }) {
           onChange={(e) => setSearch(e.target.value)}
           className="search-input"
         />
+
+        <select
+          onChange={(e) => setCategory(e.target.value)}
+          value={category}
+          className="sort-select"
+        >
+          <option value="all">{t("allProducts")}</option>
+          {categories.map((cat) => (
+            <option key={cat} value={cat}>
+              {t(cat) || cat}
+            </option>
+          ))}
+        </select>
+
         <select
           onChange={(e) => setSort(e.target.value)}
           value={sort}
           className="sort-select"
         >
-          <option value="">{t("search")}</option>
+          <option value="">{t("sortBy")}</option>
           <option value="az">{t("filters.az")}</option>
           <option value="za">{t("filters.za")}</option>
           <option value="low">{t("filters.low")}</option>
@@ -123,7 +157,7 @@ function Products({ category }) {
         </select>
       </motion.div>
 
-      {/* ===== الشبكة ===== */}
+      {/* ===== Products Grid ===== */}
       <motion.div
         className="products-grid"
         initial={{ opacity: 0 }}
@@ -131,7 +165,7 @@ function Products({ category }) {
         transition={{ delay: 0.4, duration: 0.6 }}
       >
         {contextLoading
-          ? Array.from({ length: 8 }).map((_, i) => (
+          ? Array.from({ length: itemsPerPage }).map((_, i) => (
               <div key={i} className="skeleton-card">
                 <div className="skeleton-image"></div>
                 <div className="skeleton-text"></div>
@@ -145,28 +179,23 @@ function Products({ category }) {
               const discount = product.discount ?? 0;
               const discountedPrice =
                 discount > 0
-                  ? (price - (price * discount) / 100).toFixed(2)
-                  : price.toFixed(2);
-
-              let images = [];
-              try {
-                images =
-                  typeof product.images === "string"
-                    ? JSON.parse(product.images)
-                    : product.images || [];
-              } catch {
-                images = [];
-              }
-
-              const mainImage = images.length > 0 ? images[0] : "/placeholder.jpg";
+                  ? +(price - (price * discount) / 100).toFixed(2)
+                  : price;
+              const mainImage =
+                Array.isArray(product.images) && product.images.length > 0
+                  ? product.images[0]
+                  : "/placeholder.jpg";
 
               return (
                 <motion.div
-                  key={product.id}
+                  key={`${product.category}-${product.id}`}
                   className="product-card"
+                  style={{ position: "relative" }}
                   transition={{ type: "spring", stiffness: 200 }}
                 >
-                  <div className="product-image-container" style={{ position: "relative" }}>
+                  {isNewProduct(product) && <div className="new-badge">NEW</div>}
+
+                  <div className="product-image-container">
                     <img
                       src={mainImage}
                       alt={product.name}
@@ -174,45 +203,25 @@ function Products({ category }) {
                       onClick={() => setSelectedProduct(product)}
                     />
                     {discount > 0 && (
-                      <span
-                        className="discount-badge"
-                        style={{
-                          position: "absolute",
-                          top: "10px",
-                          left: "10px",
-                          backgroundColor: "green",
-                          color: "white",
-                          padding: "5px 8px",
-                          borderRadius: "5px",
-                          fontWeight: "bold",
-                          fontSize: "0.9rem",
-                        }}
-                      >
-                        {discount}%
-                      </span>
+                      <span className="discount-badge">{discount}%</span>
                     )}
                   </div>
+
                   <div className="product-details">
                     <h3 className="product-name">{product.name}</h3>
                     <p className="product-description">{product.description}</p>
+
                     <div className="product-price">
                       {discount > 0 && (
-                        <span
-                          className="original-price"
-                          style={{
-                            textDecoration: "line-through",
-                            color: "#888",
-                            display: "block",
-                          }}
-                        >
+                        <span className="original-price">
                           {price} {t("currency")}
                         </span>
                       )}
-                      <span className="discount-price" style={{ fontWeight: "bold" }}>
+                      <span className="discount-price">
                         {discountedPrice} {t("currency")}
                       </span>
                     </div>
-                    <div className="product-rating">{renderStars(product.rating ?? 0)}</div>
+
                     <div className="product-actions-vertical">
                       <button
                         className="btn-buy"
@@ -222,7 +231,13 @@ function Products({ category }) {
                       </button>
                       <button
                         className="btn-cart"
-                        onClick={() => addToCart({ ...product, qty: 1, price })}
+                        onClick={() =>
+                          addToCart({
+                            ...product,
+                            qty: 1,
+                            price: discountedPrice,
+                          })
+                        }
                       >
                         {t("addToCart")}
                       </button>
@@ -233,8 +248,8 @@ function Products({ category }) {
             })}
       </motion.div>
 
-      {/* ===== الباجينيشن ===== */}
-      {!contextLoading && (
+      {/* ===== Pagination ===== */}
+      {!contextLoading && totalPages > 1 && (
         <motion.div
           className="pagination"
           initial={{ opacity: 0 }}
@@ -253,7 +268,7 @@ function Products({ category }) {
         </motion.div>
       )}
 
-      {/* مودال التفاصيل */}
+      {/* ===== Product Details Modal ===== */}
       {selectedProduct && (
         <DetailsProduct
           product={selectedProduct}

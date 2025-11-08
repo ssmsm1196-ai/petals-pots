@@ -1,13 +1,14 @@
-import React from 'react'
-import TopNav from './TopNav/TopNav'
-import CenterNav from './CenterNav/CenterNav'
+import React from 'react';
+import TopNav from './TopNav/TopNav';
+import CenterNav from './CenterNav/CenterNav';
+
 function Navbar() {
   return (
     <nav className='Navbar'>
-      <TopNav/>
-       <CenterNav/>  
+      <TopNav />
+      <CenterNav />  
     </nav>
-  )
+  );
 }
 
-export default Navbar
+export default React.memo(Navbar);

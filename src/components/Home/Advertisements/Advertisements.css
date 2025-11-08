@@ -1,37 +1,55 @@
+/* ✅ الحاوية العامة */
 .Advertisements {
-  width: 100%;
+  min-width: 100%;
   height: 500px;
   border: 3px solid var(--main-color);
   border-radius: 15px;
   overflow: hidden;
   position: relative;
   margin: 10px auto;
+  background-color: #000 !important;
 }
 
+/* ✅ Swiper الأساسي */
 .ad-swiper {
   width: 100%;
   height: 100%;
 }
 
+/* ✅ السلايد */
 .ad-slide {
   position: relative;
+  width: 100%;
+  height: 100%;
   text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
 }
 
+/* ✅ الصورة داخل السلايد — مضبوطة بالكامل على الإطار */
 .ad-image {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-position: center;
+  display: block;
+  border-radius: 15px;
+  background-color: #000; /* يملأ المساحات الفارغة لو الصورة مش عريضة */
 }
 
-/* Overlay content */
+/* ❌ إزالة تأثير التكبير */
+.ad-slide:hover .ad-image {
+  transform: none;
+}
+
+/* ✅ المحتوى فوق الصورة */
 .ad-overlay {
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  /* background: rgba(0, 0, 0, 0.3); */
   color: #fff;
   display: flex;
   flex-direction: column;
@@ -39,8 +57,10 @@
   justify-content: center;
   gap: 15px;
   padding: 0 15px;
+  z-index: 2;
 }
 
+/* ✅ النص */
 .ad-text {
   background-color: rgba(255, 255, 255, 0.85);
   color: var(--main-color);
@@ -53,7 +73,7 @@
   text-align: center;
 }
 
-/* Button styling */
+/* ✅ الزر */
 .ad-btn {
   background-color: var(--main-color);
   color: #fff;
@@ -73,7 +93,7 @@
   transform: scale(1.05);
 }
 
-/* Navigation buttons */
+/* ✅ أسهم التحكم */
 .swiper-button-prev,
 .swiper-button-next {
   color: var(--main-color) !important;
@@ -94,7 +114,7 @@
   color: #fff !important;
 }
 
-/* Pagination dots */
+/* ✅ النقاط */
 .swiper-pagination-bullet {
   background-color: var(--main-color) !important;
   opacity: 0.5;
@@ -107,6 +127,39 @@
   opacity: 1;
   transform: scale(1.3);
   box-shadow: 0 0 5px var(--main-color);
+}
+
+/* ✅ حالة تحميل أو عدم وجود بيانات */
+.Advertisements.loading,
+.Advertisements.empty {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #fff;
+  border: 3px solid var(--main-color);
+  border-radius: 15px;
+  overflow: hidden;
+}
+
+/* ✅ صورة اللوجو في الحالة الفارغة */
+.ad-fallback-logo {
+  width: 100%;
+  height: 100%;
+  object-fit: contain; /* يحافظ على النسبة */
+  padding: 20px;
+  animation: fadeIn 1s ease-in-out;
+}
+
+/* ✅ تأثير دخول ناعم */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.97);
+  }
+  to {
+    opacity: 0.8;
+    transform: scale(1);
+  }
 }
 
 /* ====== Responsive ====== */
@@ -143,14 +196,18 @@
 
   .swiper-button-prev,
   .swiper-button-next {
-    width: 20px !important;
-    height: 20px !important;
+    width: 25px !important;
+    height: 25px !important;
+  }
+
+  .ad-fallback-logo {
+    padding: 10px;
   }
 }
 
 @media (max-width: 480px) {
   .Advertisements {
-    height: 250px;
+    height: 230px;
   }
 
   .ad-text {
@@ -165,7 +222,11 @@
 
   .swiper-button-prev,
   .swiper-button-next {
-    width: 25px;
-    height: 25px;
+    width: 22px;
+    height: 22px;
+  }
+
+  .ad-fallback-logo {
+    padding: 8px;
   }
 }

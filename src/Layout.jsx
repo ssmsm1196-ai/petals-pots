@@ -1,17 +1,24 @@
-import React from 'react'
-import { Outlet } from 'react-router-dom'
-import Navbar from './components/Navbar/Navbar'
-import Footer from './components/Footer/Footer'
-import DetailsProduct from './components/DetailsProduct/DetailsProduct'
+import React from "react";
+import { Outlet } from "react-router-dom";
+import Navbar from "./components/Navbar/Navbar";
+import Footer from "./components/Footer/Footer";
 
+// Layout الأب لجميع الصفحات
 function Layout() {
   return (
     <>
-    <Navbar/>
-      <Outlet/>
-      <Footer/>
+      {/* Navbar ثابت في الأعلى */}
+      <Navbar />
+
+      {/* مكان عرض كل صفحة حسب الـ Route */}
+      <main>
+        <Outlet />
+      </main>
+
+      {/* Footer ثابت في الأسفل */}
+      <Footer />
     </>
-  )
+  );
 }
 
-export default Layout
+export default Layout;

@@ -38,18 +38,8 @@
   gap: 20px;
 }
 
-/* ===== كارت المنتج ===== */
-.product-card {
-  background-color: var(--light-color);
-  border-radius: 15px;
-  overflow: hidden;
-  border: 2px solid var(--main-color);
-  transition: box-shadow 0.3s ease;
-}
-
-.product-card:hover {
-  box-shadow: var(--main-color) 0px 7px 29px 0px;
-}
+/* ===== كارد المنتج ===== */
+/* تم حذف التصميم السابق للـ product-card للحفاظ على تنسيق موحد */
 
 /* ===== صورة المنتج ===== */
 .product-image {

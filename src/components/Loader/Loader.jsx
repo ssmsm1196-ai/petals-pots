@@ -1,11 +1,12 @@
-// src/components/Loader/Loader.jsx
-import React from "react";
+import React, { useMemo } from "react";
 import "./Loader.css";
 
-export default function Loader({ count = 6 }) {
+const Loader = React.memo(({ count = 6 }) => {
+  const loaders = useMemo(() => Array.from({ length: count }), [count]);
+
   return (
     <div className="loader-grid">
-      {Array.from({ length: count }).map((_, i) => (
+      {loaders.map((_, i) => (
         <div key={i} className="loader-card">
           <div className="loader-image"></div>
           <div className="loader-text"></div>
@@ -15,4 +16,6 @@ export default function Loader({ count = 6 }) {
       ))}
     </div>
   );
-}
+});
+
+export default Loader;

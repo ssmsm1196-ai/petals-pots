@@ -1,11 +1,15 @@
 {
   "home": "Home",
   "natural": "Bouquet of flowers",
-  "artificial": "Flowers & cake ",
+  "artificial": "cake",
+  "cake": "Cake",
   "arrangements": "Flower arrangements",
   "weddings": "Weddings",
   "birthdays": "Birthdays",
   "graduations": "Graduations",
+  "allProducts": "Our products",
+  "sortBy": "Sort by",
+
   "contact": "Contact Us",
   "storeLocation": " Location",
   "cart": "Cart ",
@@ -79,7 +83,7 @@
     }
   },
   "formats": {
-    "title": "Best Flower Arrangements",
+    "title": " Flower Arrangements",
     "slider": {
       "prev": "‹",
       "next": "›"
@@ -87,7 +91,7 @@
   }
   ,
 "naturalRoses": {
-  "title": "Best Natural Flower Bouquets",
+  "title": " Natural Flower Bouquets",
   "slider": {
     "prev": "‹",
     "next": "›"
@@ -109,6 +113,15 @@
   "price": "Price",
   "total": "Total",
   "removeItem": "Remove Item"
+  ,
+    "contactCOM": {
+    "title": "Petals and Pots Flowers",
+    "address": "Al Ittihad Street - Al Dhaid - Ras Al Khaimah",
+    "phone": "054 480 8838",
+    "hours": "Open ⋅ Closes 11:59 PM",
+    "followUs": "Follow Us"
+  }
+  
 
 
 }

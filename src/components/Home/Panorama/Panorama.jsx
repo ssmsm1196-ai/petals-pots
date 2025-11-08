@@ -1,64 +1,77 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useMemo, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
-import { useTranslation } from "react-i18next"; // ✅ استدعاء i18next
+import { useTranslation } from "react-i18next";
+import { useProducts } from "../../../context/ProductContext";
+import logo from "../../../assets/image/TITLE.jpg"; // 🟢 استدعاء اللوغو
 import "./Panorama.css";
 
-const images = [
-  {
-    id: 1,
-    src: "https://alamphoto.com/wp-content/uploads/2017/11/Nice-girl-carry-Beautiful-love-bouquet-flower.jpg",
-    alt: "زهور طبيعية حمراء جميلة",
-    title: "أفضل أنواع الزهور الحمراء الطبيعية",
-    description:
-      "تعرف على أجمل الزهور الحمراء التي تضيف لمسة رومانسية لمناسباتك الخاصة. زهور طبيعية مختارة بعناية لمحبّي الجمال.",
-  },
-  {
-    id: 2,
-    src: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEh5Mnkdpmqvru4vhDkuxSOwqSyNb4U52n6auzBC4GrniVj9zpsbTWxEhtaGvy2U1DmtWpe4xRrj_z0HXmMvtHKD6rIc4CeGACVd0TsaiImqtnYvXJ_SR44dr1kvo3uiXJa8DcfThZwGKMiK/w1600/%25D8%25B5%25D9%2588%25D8%25B1+%25D9%2588%25D8%25B1%25D8%25AF+%25D8%25AC%25D9%2588%25D8%25B1%25D9%258A+%25D9%2588%25D8%25B1%25D8%25AF%25D9%258A+%25D8%25B7%25D8%25A8%25D9%258A%25D8%25B9%25D9%258A+%25D8%25A8%25D8%25AF%25D9%2582%25D8%25A9+HD.jpg",
-    alt: "زهور بيضاء فخمة",
-    title: "زهور بيضاء فخمة للأعراس والمناسبات",
-    description:
-      "اكتشف روعة الزهور البيضاء التي تعبّر عن النقاء والجمال. مثالية لتزيين حفلات الزفاف والمناسبات الرسمية.",
-  },
-  // باقي الصور...
-];
-
 function Panorama() {
-  const { t } = useTranslation(); // ✅ hook الترجمة
+  const { t, i18n } = useTranslation();
+  const { panoramaImages, panoramaLoading } = useProducts();
   const [activeIndex, setActiveIndex] = useState(0);
   const swiperRef = useRef(null);
 
+  // التأكد من وجود صور
+  const hasImages = useMemo(() => panoramaImages && panoramaImages.length > 0, [panoramaImages]);
+
+  // الصورة النشطة
+  const activeImage = useMemo(() => {
+    if (!hasImages) return null;
+
+    const img = panoramaImages[activeIndex];
+    const imagesArray = Array.isArray(img.images) ? img.images : [img.images];
+
+    return {
+      ...img,
+      images: imagesArray,
+      title: i18n.language === "ar" ? img.titleAR || img.titleEN : img.titleEN || img.titleAR,
+      description: i18n.language === "ar" ? img.descriptionAR || "" : img.descriptionEN || "",
+    };
+  }, [hasImages, panoramaImages, activeIndex, i18n.language]);
+
+  // الانتقال التلقائي للصور
   useEffect(() => {
+    if (!hasImages) return;
     const interval = setInterval(() => {
-      const nextIndex = (activeIndex + 1) % images.length;
-      setActiveIndex(nextIndex);
-      swiperRef.current?.slideTo(nextIndex);
+      setActiveIndex((prev) => {
+        const next = (prev + 1) % panoramaImages.length;
+        swiperRef.current?.slideTo(next);
+        return next;
+      });
     }, 5000);
+
     return () => clearInterval(interval);
-  }, [activeIndex]);
+  }, [hasImages, panoramaImages.length]);
 
-  const goPrev = () => {
-    const prevIndex = (activeIndex - 1 + images.length) % images.length;
-    setActiveIndex(prevIndex);
-    swiperRef.current?.slideTo(prevIndex);
-  };
+  // أزرار السابق / التالي
+  const goPrev = useCallback(() => {
+    if (!hasImages) return;
+    setActiveIndex((prev) => {
+      const prevIndex = (prev - 1 + panoramaImages.length) % panoramaImages.length;
+      swiperRef.current?.slideTo(prevIndex);
+      return prevIndex;
+    });
+  }, [hasImages, panoramaImages.length]);
 
-  const goNext = () => {
-    const nextIndex = (activeIndex + 1) % images.length;
-    setActiveIndex(nextIndex);
-    swiperRef.current?.slideTo(nextIndex);
-  };
+  const goNext = useCallback(() => {
+    if (!hasImages) return;
+    setActiveIndex((prev) => {
+      const nextIndex = (prev + 1) % panoramaImages.length;
+      swiperRef.current?.slideTo(nextIndex);
+      return nextIndex;
+    });
+  }, [hasImages, panoramaImages.length]);
 
-  const activeImage = images[activeIndex];
+  if (panoramaLoading) return <p>Loading...</p>;
 
   return (
-    <section className="Panorama" aria-label="معرض بانوراما الزهور">
+    <section className="Panorama" aria-label={t("panorama.header.title")}>
+      {/* عنوان وشريط التنقل */}
       <div className="slider-header">
-        {/* ✅ الترجمة فقط على العنوان */}
         <h2 className="slider-title">{t("panorama.header.title")}</h2>
         <div className="slider-navigation">
           <button onClick={goPrev} className="btn-nav">‹</button>
@@ -66,55 +79,79 @@ function Panorama() {
         </div>
       </div>
 
+      {/* الصورة الرئيسية */}
       <div
         className="Panorama-main-image"
-        style={{ backgroundImage: `url(${activeImage.src})` }}
+        style={{
+          backgroundImage: `url(${hasImages ? activeImage.images[0] : logo})`,
+        }}
       >
         <div className="Panorama-text-container">
           <AnimatePresence mode="wait">
-            <motion.div
-              key={activeImage.id}
-              initial={{ x: -80, opacity: 0 }}
-              animate={{ x: 0, opacity: 1 }}
-              exit={{ x: 80, opacity: 0 }}
-              transition={{ duration: 0.8, ease: "easeOut" }}
-              className="Panorama-text-box"
-            >
-              <h1 className="Panorama-seo-title">{activeImage.title}</h1>
-              <p className="Panorama-seo-description">{activeImage.description}</p>
-            </motion.div>
+            {hasImages ? (
+              <motion.div
+                key={activeImage.id}
+                className="Panorama-text-box"
+                initial={{ x: -80, opacity: 0 }}
+                animate={{ x: 0, opacity: 1 }}
+                exit={{ x: 80, opacity: 0 }}
+                transition={{ duration: 0.8, ease: "easeOut" }}
+              >
+                <h1 className="Panorama-seo-title">{activeImage.title}</h1>
+                <p className="Panorama-seo-description">{activeImage.description}</p>
+              </motion.div>
+            ) : (
+              <motion.div
+                key="logo"
+                className="Panorama-text-box"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.8 }}
+              >
+                <h1 className="Panorama-seo-title">Petals & Pots</h1>
+              </motion.div>
+            )}
           </AnimatePresence>
         </div>
 
-        <div className="Panorama-thumbnails-container">
-          <Swiper
-            modules={[Navigation]}
-            spaceBetween={10}
-            slidesPerView={4}
-            onSwiper={(swiper) => (swiperRef.current = swiper)}
-            breakpoints={{
-              320: { slidesPerView: 2 },
-              480: { slidesPerView: 2 },
-              768: { slidesPerView: 3 },
-              1024: { slidesPerView: 4 },
-            }}
-          >
-            {images.map((img, index) => (
-              <SwiperSlide key={img.id}>
-                <button
-                  className={`Panorama-thumb ${activeIndex === index ? "active" : ""}`}
-                  onClick={() => {
-                    setActiveIndex(index);
-                    swiperRef.current?.slideTo(index);
-                  }}
-                  aria-label={img.alt}
-                >
-                  <img src={img.src} alt={img.alt} loading="lazy" />
-                </button>
-              </SwiperSlide>
-            ))}
-          </Swiper>
-        </div>
+        {/* التومبنيال */}
+        {hasImages && (
+          <div className="Panorama-thumbnails-container">
+            <Swiper
+              modules={[Navigation]}
+              spaceBetween={10}
+              slidesPerView={4}
+              onSwiper={(swiper) => (swiperRef.current = swiper)}
+              breakpoints={{
+                320: { slidesPerView: 2 },
+                480: { slidesPerView: 2 },
+                768: { slidesPerView: 3 },
+                1024: { slidesPerView: 4 },
+              }}
+            >
+              {panoramaImages.map((img, index) => {
+                const imgSrc = Array.isArray(img.images) ? img.images[0] : img.images;
+                const title = i18n.language === "ar" ? img.titleAR || img.titleEN : img.titleEN || img.titleAR;
+
+                return (
+                  <SwiperSlide key={img.id}>
+                    <button
+                      className={`Panorama-thumb ${activeIndex === index ? "active" : ""}`}
+                      onClick={() => {
+                        setActiveIndex(index);
+                        swiperRef.current?.slideTo(index);
+                      }}
+                      aria-label={title}
+                    >
+                      <img src={imgSrc} alt={title} loading="lazy" />
+                    </button>
+                  </SwiperSlide>
+                );
+              })}
+            </Swiper>
+          </div>
+        )}
       </div>
     </section>
   );

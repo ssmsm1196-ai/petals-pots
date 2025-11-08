@@ -4,22 +4,25 @@
     padding: 0;
     box-sizing: border-box;
 }
+
 :root{
   --main-color: rgb(128, 0, 128); 
-  --body-color: #fff8f9; /* خلفية شبه بيضاء تميل للوردي */
+    /* --main-color: #b9a35a;  */
+  --body-color: white; /* خلفية شبه بيضاء تميل للوردي */
   --light-color: #ffffff;
   --dark-color: #1a1a1a;
   --accent-color: #ffd6e0; 
-  --logo-color: #fac96e;
+  --logo-color: #b9a35a;
   --opacity-color: rgba(128, 0, 128, 0.836);
 }
 main{
   
     font-family: "Amiri", serif;
-    padding:10px 50px 0 50px ;
+    padding:10px 30px 0 30px ;
     color: var(--main-color);
 background: var(--body-color);
 overflow-x: hidden;
+position: relative;
 
 }
 @media (max-width:800px) {
